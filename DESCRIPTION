@@ -11,7 +11,8 @@ Imports:
     dplyr,
     Hmisc,
     lubridate,
-    tidyquant
+    tidyquant,
+    tidyr
 Suggests:
     testthat
 License: `use_mit_license()`
