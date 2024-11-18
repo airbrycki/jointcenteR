@@ -26,8 +26,8 @@ tab <- function(df, var, weight = unwgtd) {
   }
   
   # Convert 'var' to a symbol
-  var <- ensym(var)
-  weight <- ensym(weight)
+  var <- rlang::ensym(var)
+  weight <- rlang::ensym(weight)
   
   # Check if 'var' is in the dataframe columns
   if (!as.character(var) %in% names(df)) {

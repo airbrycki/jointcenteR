@@ -28,10 +28,10 @@ tab3 <- function(df, var, var2, var3, weight = unwgtd) {
   }
   
   # Convert 'var' to a symbol
-  var <- ensym(var)
-  var2 <- ensym(var2)
-  var3 <- ensym(var3)
-  weight <- ensym(weight)
+  var <- rlang::ensym(var)
+  var2 <- rlang::ensym(var2)
+  var3 <- rlang::ensym(var3)
+  weight <- rlang::ensym(weight)
   
   # Check if 'var' is in the dataframe columns
   if (!as.character(var) %in% names(df)) {
@@ -53,7 +53,7 @@ tab3 <- function(df, var, var2, var3, weight = unwgtd) {
       dplyr::group_by(!!var, !!var2) |>
       dplyr::mutate(sh = tot / sum(tot) * 100) |>
       dplyr::ungroup() |>
-      dplyr::pivot_wider(names_from = !!var3, values_from = c(tot, sh))
+      tidyr::pivot_wider(names_from = !!var3, values_from = c(tot, sh))
     return(unwgtd)
   }
   
@@ -73,7 +73,7 @@ tab3 <- function(df, var, var2, var3, weight = unwgtd) {
       dplyr::group_by(!!var, !!var2) |>
       dplyr::mutate(sh = tot / sum(tot) * 100) |>
       dplyr::ungroup() |>
-      dplyr::pivot_wider(names_from = !!var3, values_from = c(tot, sh))
+      tidyr::pivot_wider(names_from = !!var3, values_from = c(tot, sh))
     
     return(wgtd)
   }

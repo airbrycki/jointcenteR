@@ -30,9 +30,9 @@ wgtd_med2 <- function(df, var, var2, weight = "unwgtd") {
   }
   
   # Convert 'var' to a symbol
-  var <- ensym(var)
-  var2 <- ensym(var2)
-  weight <- ensym(weight)
+  var <- rlang::ensym(var)
+  var2 <- rlang::ensym(var2)
+  weight <- rlang::ensym(weight)
   
   # Check if 'var' is in the dataframe columns
   if (!as.character(var) %in% names(df)) {
