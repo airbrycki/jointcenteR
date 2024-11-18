@@ -32,7 +32,7 @@ inflate_ai <- function(initial_amount, reference_year, target_year) {
   cpi_data <- tidyquant::tq_get("CPIAUCNS", from = "1900-01-01", to = Sys.Date(), get = "economic.data")
   
   # Extract the year and calculate the annual average CPI for the reference and target years
-  cpi_data <- cpi_data 
+  cpi_data <- cpi_data |>
     dplyr::mutate(year = lubridate::year(date)) |>
     dplyr::filter(year %in% c(reference_year, target_year)) |>
     dplyr::group_by(year) |>
