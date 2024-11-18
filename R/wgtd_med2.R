@@ -45,11 +45,11 @@ wgtd_med2 <- function(df, var, var2, weight = "unwgtd") {
   # If 'weight' is unwgtd, calculate unweighted median
   if (weight == "unwgtd") {
     unwgtd <- df |>
-      filter(!is.na(!!var) & !is.na(!!var2)) |>
-      group_by(!!var) |>
-      summarise(!!paste0("median_", var2) :=
+      dplyr::filter(!is.na(!!var) & !is.na(!!var2)) |>
+      dplyr::group_by(!!var) |>
+      dplyr::summarise(!!paste0("median_", var2) :=
                   Hmisc::wtd.quantile(!!var2, probs=0.5)) |>
-      ungroup()
+      dplyr::ungroup()
     return(unwgtd)
   }
   
@@ -63,11 +63,11 @@ wgtd_med2 <- function(df, var, var2, weight = "unwgtd") {
     
     # Calculate totals using the 'weight' column
     wgtd <- df |>
-      filter(!is.na(!!var) & !is.na(!!var2)) |>
-      group_by(!!var) |>
-      summarise(!!paste0("median_", var2) :=
+      dplyr::filter(!is.na(!!var) & !is.na(!!var2)) |>
+      dplyr::group_by(!!var) |>
+      dplyr::summarise(!!paste0("median_", var2) :=
                   Hmisc::wtd.quantile(!!var2, probs=0.5, !!weight)) |>
-      ungroup()
+      dplyr::ungroup()
     
     return(wgtd)
   }

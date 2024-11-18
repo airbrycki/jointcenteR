@@ -33,11 +33,11 @@ inflate_ai <- function(initial_amount, reference_year, target_year) {
   
   # Extract the year and calculate the annual average CPI for the reference and target years
   cpi_data <- cpi_data 
-    mutate(year = lubridate::year(date)) |>
-    filter(year %in% c(reference_year, target_year)) |>
-    group_by(year) |>
-    summarise(annual_avg_cpi = mean(price, na.rm = TRUE)) |>
-    ungroup()
+    dplyr::mutate(year = lubridate::year(date)) |>
+    dplyr::filter(year %in% c(reference_year, target_year)) |>
+    dplyr::group_by(year) |>
+    dplyr::summarise(annual_avg_cpi = mean(price, na.rm = TRUE)) |>
+    dplyr::ungroup()
   
   # Ensure that the requested years are in the available data
   if (nrow(cpi_data) < 2) {
@@ -45,8 +45,12 @@ inflate_ai <- function(initial_amount, reference_year, target_year) {
   }
   
   # Extract CPI values for the reference and target years
-  cpi_ref <- cpi_data |> filter(year == reference_year) |> pull(annual_avg_cpi)
-  cpi_target <- cpi_data |> filter(year == target_year) |> pull(annual_avg_cpi)
+  cpi_ref <- cpi_data |> 
+    dplyr::filter(year == reference_year) |> 
+    dplyr::pull(annual_avg_cpi)
+  cpi_target <- cpi_data |> 
+    dplyr::filter(year == target_year) |> 
+    dplyr::pull(annual_avg_cpi)
   
   # Inflation adjustment formula
   adjusted_amount <- round(initial_amount * (cpi_target / cpi_ref), 2)

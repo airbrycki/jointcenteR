@@ -47,13 +47,13 @@ tab3 <- function(df, var, var2, var3, weight = unwgtd) {
   # If 'weight' is NULL, calculate totals based on counts (n)
   if (weight == "unwgtd") {
     unwgtd <- df |>
-      filter(!is.na(!!var) & !is.na(!!var2) & !is.na(!!var3)) |>
-      group_by(!!var, !!var2, !!var3) |>
-      summarise(tot = n()) |>
-      group_by(!!var, !!var2) |>
-      mutate(sh = tot / sum(tot) * 100) |>
-      ungroup() |>
-      pivot_wider(names_from = !!var3, values_from = c(tot, sh))
+      dplyr::filter(!is.na(!!var) & !is.na(!!var2) & !is.na(!!var3)) |>
+      dplyr::group_by(!!var, !!var2, !!var3) |>
+      dplyr::summarise(tot = n()) |>
+      dplyr::group_by(!!var, !!var2) |>
+      dplyr::mutate(sh = tot / sum(tot) * 100) |>
+      dplyr::ungroup() |>
+      dplyr::pivot_wider(names_from = !!var3, values_from = c(tot, sh))
     return(unwgtd)
   }
   
@@ -67,13 +67,13 @@ tab3 <- function(df, var, var2, var3, weight = unwgtd) {
     
     # Calculate totals using the 'weight' column
     wgtd <- df |>
-      filter(!is.na(!!var) & !is.na(!!var2) & !is.na(!!var3)) |>
-      group_by(!!var, !!var2, !!var3) |>
-      summarise(tot = sum(!!weight, na.rm = TRUE)) |>
-      group_by(!!var, !!var2) |>
-      mutate(sh = tot / sum(tot) * 100) |>
-      ungroup() |>
-      pivot_wider(names_from = !!var3, values_from = c(tot, sh))
+      dplyr::filter(!is.na(!!var) & !is.na(!!var2) & !is.na(!!var3)) |>
+      dplyr::group_by(!!var, !!var2, !!var3) |>
+      dplyr::summarise(tot = sum(!!weight, na.rm = TRUE)) |>
+      dplyr::group_by(!!var, !!var2) |>
+      dplyr::mutate(sh = tot / sum(tot) * 100) |>
+      dplyr::ungroup() |>
+      dplyr::pivot_wider(names_from = !!var3, values_from = c(tot, sh))
     
     return(wgtd)
   }

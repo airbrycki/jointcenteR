@@ -43,11 +43,11 @@ tab2 <- function(df, var, var2, weight = unwgtd) {
   # If 'weight' is NULL, calculate totals based on counts (n)
   if (weight == "unwgtd") {
     unwgtd <- df |>
-      filter(!is.na(!!var) & !is.na(!!var2)) |>
-      group_by(!!var, !!var2) |>
-      summarise(tot = n()) |>
-      group_by(!!var) |>
-      mutate(sh = tot / sum(tot) * 100)
+      dplyr::filter(!is.na(!!var) & !is.na(!!var2)) |>
+      dplyr::group_by(!!var, !!var2) |>
+      dplyr::summarise(tot = n()) |>
+      dplyr::group_by(!!var) |>
+      dplyr::mutate(sh = tot / sum(tot) * 100)
     return(unwgtd)
   }
   
@@ -61,11 +61,11 @@ tab2 <- function(df, var, var2, weight = unwgtd) {
     
     # Calculate totals using the 'weight' column
     wgtd <- df |>
-      filter(!is.na(!!var) & !is.na(!!var2)) |>
-      group_by(!!var, !!var2) |>
-      summarise(tot = sum(!!weight, na.rm = TRUE)) |>
-      group_by(!!var) |>
-      mutate(sh = tot / sum(tot) * 100)
+      dplyr::filter(!is.na(!!var) & !is.na(!!var2)) |>
+      dplyr::group_by(!!var, !!var2) |>
+      dplyr::summarise(tot = sum(!!weight, na.rm = TRUE)) |>
+      dplyr::group_by(!!var) |>
+      dplyr::mutate(sh = tot / sum(tot) * 100)
     
     return(wgtd)
   }
