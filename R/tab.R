@@ -39,7 +39,7 @@ tab <- function(df, var, weight = unwgtd) {
     unwgtd <- df |>
       dplyr::filter(!is.na(!!var)) |>
       dplyr::group_by(!!var) |>
-      dplyr::summarise(tot = n()) |>
+      dplyr::summarise(tot = dplyr::n()) |>
       dplyr::ungroup() |>
       dplyr::mutate(sh = tot / sum(tot) * 100)
     return(unwgtd)
