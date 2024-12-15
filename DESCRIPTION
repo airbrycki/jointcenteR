@@ -1,0 +1,30 @@
+Package: jointcenteR
+Title: Perform routine Joint Center tasks
+Version: 0.0.0.9000
+Authors@R: 
+    person("Whitney", "Airgood-Obrycki", , "whitney_airgood-obrycki@harvard.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-3644-1716"))
+Description: Loads common datasets into global environmnet. Splits multiyear ACS file
+    into manageable dataframes. Applies ACS and JCHS variable labels. Processes 
+    common public datasets, like New Residential Construction, HVS, and AHAR. 
+    Calculates weighted and unweighted tables with counts and shares or medians 
+    for large survey datasets. Inflates continuous variables to target year 
+    dollars using CPI-U All Items, and inflates rents to target year dollars 
+    using CPI-U Less Shelter. Exports tabs to an excel workbook. Splits text
+    document into spreadsheet rows for facthchecking.
+Imports: 
+    dplyr,
+    Hmisc,
+    lubridate,
+    openxlsx,
+    rlang,
+    tidycensus,
+    tidyquant,
+    tidyr
+Suggests:
+    testthat
+License: `use_mit_license()`
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+
