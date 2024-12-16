@@ -25,8 +25,11 @@ Recommend running rm(multiyear) once years of interest are extracted.
 \examples{
 acspath <- "C:/Data/ACS/"
 multfilename<- "ACS_multiyear_hhplus_RentersPlusVacant.csv"
+
+# split out multiple years
 load_mult()
-load_mult(acspath, multfilename)
-purrr::map(c(2001:2005), split_mult())
+purrr::map(c(2001:2005), split_mult)
+
+split_mult(2006)
 
 }

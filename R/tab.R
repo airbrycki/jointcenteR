@@ -6,27 +6,30 @@
 #'
 #' @param var,var2,var3 A categorical variable to tabulate.
 #'
-#' @param weight A numeric weight variable. If no weight is provided, the tabulation is unweighted.
+#' @param weight A numeric weight variable. If no weight is provided, the
+#' tabulation is unweighted.
 #'
 #' @return A tibble of weighted or unweighted sums and shares.
 #'
-#' @note The first two variables entered are the grouping variables for calculating shares.
+#' @note The first two variables entered are the grouping variables for
+#' calculating shares.
 #'
 #' @examples
 #' data("acs22")
-#' # calculate the number and share of households by region, tenure, and disability using household weights
-#' tab3(acs22, region, ten, dis, wgtp) 
-#' 
-#' #unweighted observations
+#' # calculate the number and share of households by region, tenure, and
+#' disability using household weights
+#' tab3(acs22, region, ten, dis, wgtp)
+#'
+#' # unweighted observations
 #' tab3(acs22, region, ten, dis)
-#' 
+#'
 #' @export
 tab <- function(df, var, var2 = NULL, var3 = NULL, weight = NULL) {
   # Check if df is a valid dataframe
   if (!inherits(df, "data.frame")) {
     stop("The provided 'df' is not a valid data frame.")
   }
-  
+
   # Convert 'var' to a symbol
   var <- rlang::ensym(var)
   var2 <- rlang::enquo(var2)
@@ -80,15 +83,15 @@ tab <- function(df, var, var2 = NULL, var3 = NULL, weight = NULL) {
       return(unwgtd_3way)
     }
   }
-  
+
   if (!is.null(weight)) {
     weight <- rlang::ensym(weight)
-    
+
     # Check if the 'weight' column exists in the dataframe
     if (!as.character(weight) %in% names(df)) {
       stop(as.character(weight), "' is not found in the dataframe.")
     }
-    
+
     if (is.null(var2) & is.null(var3)) {
       wgtd_1way <- df |>
         dplyr::filter(!is.na(!!var)) |>
@@ -97,7 +100,7 @@ tab <- function(df, var, var2 = NULL, var3 = NULL, weight = NULL) {
         dplyr::ungroup() |>
         dplyr::mutate(sh = tot / sum(tot) * 100)
       return(wgtd_1way)
-    } 
+    }
     else if (!is.null(var2) & is.null(var3) | is.null(var2) & !is.null(var3)) {
       wgtd_2way <- df |>
         dplyr::filter(!is.na(!!var) & !is.na(!!var2)) |>
@@ -106,7 +109,7 @@ tab <- function(df, var, var2 = NULL, var3 = NULL, weight = NULL) {
         dplyr::group_by(!!var) |>
         dplyr::mutate(sh = tot / sum(tot) * 100)
       return(wgtd_2way)
-    } 
+    }
     else {
       wgtd_3way <- df |>
         dplyr::filter(!is.na(!!var) & !is.na(!!var2) & !is.na(!!var3)) |>

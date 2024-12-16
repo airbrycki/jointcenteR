@@ -11,7 +11,8 @@ tab(df, var, var2 = NULL, var3 = NULL, weight = NULL)
 
 \item{var, var2, var3}{A categorical variable to tabulate.}
 
-\item{weight}{A numeric weight variable. If no weight is provided, the tabulation is unweighted.}
+\item{weight}{A numeric weight variable. If no weight is provided, the
+tabulation is unweighted.}
 }
 \value{
 A tibble of weighted or unweighted sums and shares.
@@ -20,14 +21,16 @@ A tibble of weighted or unweighted sums and shares.
 Calculate weighted and weighted tables using up to three variables
 }
 \note{
-The first two variables entered are the grouping variables for calculating shares.
+The first two variables entered are the grouping variables for
+calculating shares.
 }
 \examples{
 data("acs22")
-# calculate the number and share of households by region, tenure, and disability using household weights
-tab3(acs22, region, ten, dis, wgtp) 
+# calculate the number and share of households by region, tenure, and
+disability using household weights
+tab3(acs22, region, ten, dis, wgtp)
 
-#unweighted observations
+# unweighted observations
 tab3(acs22, region, ten, dis)
 
 }

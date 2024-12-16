@@ -6,7 +6,7 @@
 \alias{jointcenteR-package}
 \title{jointcenteR: Perform routine Joint Center tasks}
 \description{
-Loads common datasets into global environmnet. Splits multiyear ACS file into manageable dataframes. Calculates weighted and unweighted tables with counts and shares or medians for large survey datasets. Inflates continuous variables to target year dollars using CPI-U All Items, and inflates rents to target year dollars using CPI-U Less Shelter. Exports tabs to an excel workbook.
+Makes routine tasks easier, from loading data to running tabs and exporting them to excel. Loads American Community Survey datasets into global environment. Splits multiyear ACS file into manageable dataframes. Applies ACS and JCHS variable labels. Processes common public datasets, like New Residential Construction, Housing Vacancy Survey, and HUD AHAR. Calculates weighted and unweighted estimates with counts and shares or medians for large survey datasets. Inflates continuous variables to target year dollars using CPI-U All Items, and inflates rents to target year dollars using CPI-U Less Shelter. Exports tabs to an excel workbook. Splits text document into spreadsheet rows for facthchecking.
 }
 \author{
 \strong{Maintainer}: Whitney Airgood-Obrycki \email{whitney_airgood-obrycki@harvard.edu} (\href{https://orcid.org/0000-0003-3644-1716}{ORCID})

@@ -12,16 +12,22 @@ load_met(yr, path = acspath)
 \item{path}{A path to the location of metro .csv files.}
 }
 \value{
-Dataframes loaded into global environment named with convention met2023.
+Dataframes loaded into global environment named with convention
+met2023.
 }
 \description{
 Reads annual ACS metro files into global environment
 }
 \note{
-Annual metro files should be in one location and saved as .csv files.
+Annual metro files should be in one location and saved as .csv files. Load
+multiple years with purrr::map.
 }
 \examples{
 acspath <- "C:/Data/ACS/"
+# single year
 load_met(2022, path = acspath)
+
+# multiple years
+purrr::map(c(2019, 2023), load_met, path = acspath)
 
 }

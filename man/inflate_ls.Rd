@@ -20,14 +20,15 @@ A numeric vector of inflated values.
 Inflate rents from reference to target dollars using CPI-U Less Shelter, NSA.
 }
 \note{
-CPI-U inflation rates are pulled from FRED using tidyquant. Monthly values are averaged for the year.
+CPI-U inflation rates are pulled from FRED using tidyquant. Monthly
+values are averaged for the year.
 }
 \examples{
-#inflate rent from 2000 dollars to 2023 dollars
+# inflate rent from 2000 dollars to 2023 dollars
 inflate_ls(500, 2000, 2023)
 
 data("acs22")
 # inflate contract rents to target year dollars in new variable
-acs22 |> mutate(rntp_infl_23 = inflate_ls(rntp, 2022, 2023))
+acs22 |> mutate(rntp_infl_23 = inflate_ls(rntp, unique(year), 2023))
 
 }

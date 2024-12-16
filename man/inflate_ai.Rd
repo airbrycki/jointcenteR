@@ -23,7 +23,7 @@ Inflate values from reference to target dollars using CPI-U All Items, NSA.
 CPI-U inflation rates are pulled from FRED using tidyquant. Monthly values are averaged for the year.
 }
 \examples{
-#inflate value from 2000 dollars to 2023 dollars
+# inflate value from 2000 dollars to 2023 dollars
 inflate_ai(5000, 2000, 2023)
 
 data("acs22")

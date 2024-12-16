@@ -2,11 +2,11 @@
 
 export(add_ACSlabels)
 export(add_JCHSlabels)
-export(county_permits)
 export(export_table)
 export(factcheck_format)
 export(get_hvs)
 export(get_nrc)
+export(get_permits)
 export(inflate_ai)
 export(inflate_ls)
 export(load_acs)

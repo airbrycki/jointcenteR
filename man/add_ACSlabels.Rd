@@ -9,7 +9,8 @@ add_ACSlabels(df, dict_url)
 \arguments{
 \item{df}{A dataframe created from load_acs of a single ACS year.}
 
-\item{dict_url}{The URL of the data dictionary .csv file that corresponds to the df year.}
+\item{dict_url}{The URL of the data dictionary .csv file that corresponds to
+the df year.}
 }
 \value{
 Dataframe with ACS factor variables labeled.
@@ -18,12 +19,18 @@ Dataframe with ACS factor variables labeled.
 Uses ACS PUMS data dictionary to add labels to household plus file.
 }
 \note{
-Labels are for standard ACS variables only. JCHS variables will need to be labeled separately.
+Labels are for standard ACS variables only. JCHS variables will need to
+be labeled separately.
 }
 \examples{
-dict_url <- "https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2023.csv"
+dict_url <-
+"https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/
+ PUMS_Data_Dictionary_2023.csv"
 load_acs(2023)
 acs2023 <- add_ACSlabels(acs2023, dict_url)
-acs2023 |> filter(as.integer(ten) >2) |> group_by(ten) |> summarise(tot = sum(wgtp))
+acs2023 |>
+  filter(as.integer(ten) >2) |>
+  group_by(ten) |>
+  summarise(tot = sum(wgtp))
 
 }

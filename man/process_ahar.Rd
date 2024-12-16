@@ -22,7 +22,8 @@ and overall homelessness counts by state and for the US
 \note{
 HUD posts the data as an xlsb, which is very hard to work with. First
 download the data from
-https://www.huduser.gov/portal/sites/default/files/xls/2007-2023-PIT-Counts-by-CoC.xlsb
+https://www.huduser.gov/portal/sites/default/files/xls/
+2007-2023-PIT-Counts-by-CoC.xlsb
 and save locally as an xlsx. Use 2021 data with caution: unsheltered
 and overall counts were not complete.
 }
@@ -33,7 +34,7 @@ process_ahar(2023, file)
 
 # multiple years
 yrs <- 2007:2023
-ahar_st <- map(yrs, ahar_table, file = file) |> 
+ahar_st <- map(yrs, ahar_table, file = file) |>
   reduce(left_join, by = "State")
 
 }

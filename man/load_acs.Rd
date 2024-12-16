@@ -9,21 +9,28 @@ load_acs(yr, currentyear = 2023, path = acspath)
 \arguments{
 \item{yr}{The year of the data file to load in}
 
-\item{currentyear}{The most recent year of data available, used for coding variables that don't need to be inflated.}
+\item{currentyear}{The most recent year of data available, used for coding
+variables that don't need to be inflated.}
 
 \item{path}{A path to the location of ACS .csv files.}
 }
 \value{
-Dataframes loaded into global environment named with convention acs2023.
+Dataframes loaded into global environment named with convention
+acs2023.
 }
 \description{
 Reads annual ACS household plus files into global environment
 }
 \note{
-Annual ACS files should be in one location and saved as .csv files.
+Annual ACS files should be in one location and saved as .csv files. Load
+multiple years with purrr::map.
 }
 \examples{
 acspath <- "C:/Data/ACS/"
+# single year
 load_acs(2022, currentyear = 2023, path = acspath)
+
+# multiple years
+purrr::map(c(2019, 2021:2023), load_acs, path = acspath)
 
 }

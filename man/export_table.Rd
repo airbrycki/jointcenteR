@@ -7,10 +7,12 @@
 export_table(input_wb, output_wb, tab)
 }
 \arguments{
-\item{input_wb}{The .xlsx workbook to read, including the file path, in quotations.}
+\item{input_wb}{The .xlsx workbook to read, including the file path,
+in quotations.}
 
-\item{output_wb}{The .xlsx workbook to write to, including the file path, in quotations.
-If the same as the input_wb, the input_wb will be overwritten or added to.}
+\item{output_wb}{The .xlsx workbook to write to, including the file path,
+in quotations. If the output is the same as the input_wb, the input_wb will
+be overwritten or added to.}
 
 \item{tab}{The named tibble or object to write.}
 }
