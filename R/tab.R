@@ -18,10 +18,10 @@
 #' data("acs22")
 #' # calculate the number and share of households by region, tenure, and
 #' disability using household weights
-#' tab3(acs22, region, ten, dis, wgtp)
+#' tab(acs22, region, ten, dis, wgtp)
 #'
 #' # unweighted observations
-#' tab3(acs22, region, ten, dis)
+#' tab(acs22, region, ten, dis)
 #'
 #' @export
 tab <- function(df, var, var2 = NULL, var3 = NULL, weight = NULL) {
