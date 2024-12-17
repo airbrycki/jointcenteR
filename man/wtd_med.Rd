@@ -31,9 +31,9 @@ Hmisc::wtd.quantile(var, probs=0.5).
 \examples{
 data("acs22")
 # calculate the weighted median household income by tenure
-wgtd_med2(acs22, ten, hincp, wgtp) 
+wtd_med(acs22, ten, hincp, wgtp)
 
 #returns unweighted medians if no weight if provided
-wgtd_med2(acs22, ten, hincp)
+wtd_med(acs22, ten, hincp)
 
 }
