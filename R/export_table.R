@@ -3,14 +3,14 @@
 #' Exports tibbles and named objects to a worksheet of the same name in either
 #' a new or existing workbook
 #'
+#' @param tab The named tibble or object to write.
+#'
 #' @param input_wb The .xlsx workbook to read, including the file path,
 #' in quotations.
 #'
 #' @param output_wb The .xlsx workbook to write to, including the file path,
 #' in quotations. If the output is the same as the input_wb, the input_wb will
 #' be overwritten or added to.
-#'
-#' @param tab The named tibble or object to write.
 #'
 #' @return Workbook with sheets named after input tab.
 #'
@@ -21,7 +21,7 @@
 #' export_table("C:/Data/tabswb.xlsx", "C:/Data/tabswb.xlsx", tenTable)
 #'
 #' @export
-export_table <- function(input_wb, output_wb, tab) {
+export_table <- function(tab, input_wb, output_wb) {
 
   if (file.exists(input_wb)) {
     wb <- openxlsx::loadWorkbook(input_wb)
