@@ -1,6 +1,7 @@
 #' Inflate with CPI-U All Items
 #'
-#' Inflate values from reference to target dollars using CPI-U All Items, NSA.
+#' Inflate values from reference to target dollars using CPI-U All Items, annual
+#' NSA
 #'
 #' @param initial_amount A numeric value or vector to be inflated.
 #'
@@ -23,17 +24,16 @@
 #' @export
 inflate_ai <- function(initial_amount, reference_year, target_year) {
 
-  # Input Validation
+  # validate amount
   if (!is.numeric(initial_amount)) {
     stop("Initial amoung must be a numeric value.")
   }
 
-  # Fetch CPI data for CUUR0000SA0L2 from FRED
+  # get CPI data for CPIAUCNS from FRED
   cpi_data <- tidyquant::tq_get("CPIAUCNS", from = "1900-01-01", to = Sys.Date(),
                                 get = "economic.data")
 
-  # Extract the year and calculate the annual average CPI for the reference and
-  # target years
+  # calculate the annual average CPI for the reference and target years
   cpi_data <- cpi_data |>
     dplyr::mutate(year = lubridate::year(date)) |>
     dplyr::filter(year %in% c(reference_year, target_year)) |>
@@ -41,12 +41,12 @@ inflate_ai <- function(initial_amount, reference_year, target_year) {
     dplyr::summarise(annual_avg_cpi = mean(price, na.rm = TRUE)) |>
     dplyr::ungroup()
 
-  # Ensure that the requested years are in the available data
+  # throw error if requested years are out of bounds of available data
   if (nrow(cpi_data) < 2 & reference_year != target_year) {
     stop("The specified years are out of date bounds.")
   }
 
-  # Extract CPI values for the reference and target years
+  # get CPI values just for the reference and target years
   cpi_ref <- cpi_data |>
     dplyr::filter(year == reference_year) |>
     dplyr::pull(annual_avg_cpi)
@@ -54,7 +54,7 @@ inflate_ai <- function(initial_amount, reference_year, target_year) {
     dplyr::filter(year == target_year) |>
     dplyr::pull(annual_avg_cpi)
 
-  # Inflation adjustment formula
+  # adjust for inflation
   adjusted_amount <- round(initial_amount * (cpi_target / cpi_ref), 2)
 
   return(adjusted_amount)
