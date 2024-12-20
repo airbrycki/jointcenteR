@@ -73,7 +73,7 @@ file <- "C:/Data/2007-2023-PIT-Counts-by-State.xlsx"
 ahar <- process_ahar(2023, file)
 ```
 
-### Tabulate and inflate estimates
+## Tabulate and inflate estimates
 
 Four functions streamline the process for creating weighted or unweighted estimates, calculating weighted medians, or inflating values:
 * tab(): produces weighted or unweighted estimate tables with count and share
@@ -120,7 +120,7 @@ acs2022 |>
 inflate_ls(1000, 2022, 2023)
 ```
 
-### Export
+## Export data
 
 Two functions are for preparing output and exporting it to excel:
 * factcheck_format(): takes a .txt file and splits it at sentence breaks and carriage returns, putting each line in a new row for factchecking
