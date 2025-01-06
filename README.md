@@ -133,5 +133,5 @@ chapter1 <- factcheck_format("C:/Data/chaptertext.txt")
 # export table or object to an excel sheet
 tenTable <- acs2023 |>
   tab(tensimp, w = wgtp)
-export_table("C:/Data/tabswb.xlsx", "C:/Data/tabswb.xlsx", tenTable)
+export_table(tenTable, "C:/Data/tabswb.xlsx", "C:/Data/tabswb.xlsx")
 ```
