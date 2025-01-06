@@ -17,7 +17,8 @@ inflate_ai(initial_amount, reference_year, target_year)
 A numeric vector of inflated values.
 }
 \description{
-Inflate values from reference to target dollars using CPI-U All Items, NSA.
+Inflate values from reference to target dollars using CPI-U All Items, annual
+NSA
 }
 \note{
 CPI-U inflation rates are pulled from FRED using tidyquant. Monthly values are averaged for the year.

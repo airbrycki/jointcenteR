@@ -28,10 +28,10 @@ Can extract multiple years at once using purrr::map (see examples).
 \examples{
 # pull state permits for 2023 and select unit variables
 sp23 <- get_permits("state", 2023)
-sp23 |> 
+sp23 |>
   select(year, region, state_name, starts_with("units_") & ends_with("unit"))
 
-# pull multiple years at once and bind into long df 
+# pull multiple years at once and bind into long df
 sp_list <- map(2003:2023, get_permits, geography = "state")
 sp <- bind_rows(sp_list)
 

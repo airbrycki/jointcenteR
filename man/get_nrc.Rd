@@ -23,28 +23,30 @@ Annual counts are totals of monthly NSA values, except annual under
 construction counts are the value in December of a given year. If
 current year is incomplete, it is omitted from annual table. Monthly
 counts are seasonally adjusted annual rates, except under construction
-counts are the seasonally adjusted rate (not annualized).
+counts are the seasonally adjusted rate at end of month
+(not annualized).
 }
 \examples{
 # pull annual data
-nrc_a <- get_nrc(type = "annual") |> 
+nrc_a <- get_nrc(type = "annual") |>
   # keep vars for year and units in buildings with 2+ units
-  select(year, contains('_2pl')) |> 
+  select(year, contains('_2pl')) |>
   # keep years in range of interest
   filter(year >= 2000)
 
 # pull monthly data to calculate ytd SA average
-nrc_m <- get_nrc("monthly") |> 
+nrc_m <- get_nrc("monthly") |>
   # reshape to make calculations easier
   pivot_longer(!c("year", "month"), names_to = "var", values_to = "value") |>
-  filter(str_detect(var, '_2pl') & year == 2024) |> # keep current year & mf vars
-  group_by(year, var) |>   
-  mutate(avg = mean(value)) |>   
-  filter(month == 1) |>   
-  select(-month, -value) |>   
+  # keep current year & mf vars
+  filter(stringr::str_detect(var, '_2pl') & year == 2024) |>
+  group_by(year, var) |>
+  mutate(avg = mean(value)) |>
+  filter(month == 1) |>
+  select(-month, -value) |>
   pivot_wider(names_from = var, values_from = avg)
 
-#combine annual and ytd dfs  
+#combine annual and ytd dfs
 nrc <- rbind(nrc_a, nrc_m)
 
 }
