@@ -12,6 +12,7 @@ You can install the development version of jointcenteR from [GitHub](https://git
 ``` r
 # install.packages("devtools")
 devtools::install_github("airbrycki/jointcenteR")
+library(jointcenteR)
 ```
 
 ## Load data from JCHS hhplus files
@@ -26,7 +27,6 @@ Six functions in the package are for loading local JCHS data files and preparing
 
 #### Examples
 ```{r example}
-library(jointcenteR)
 acspath <- "C:/Data/ACS/"
 # load 2023 acs hhplus file into global environment
 load_acs(2023, acspath)
@@ -58,7 +58,6 @@ Four functions make it easier to pull public data and to put it in a tidy format
 
 #### Examples
 ```{r example2}
-library(jointcenteR)
 # pull housing vacancy survey data
 hvs <- get_hvs()
 
@@ -83,7 +82,6 @@ Four functions streamline the process for creating weighted or unweighted estima
 
 #### Examples
 ```{r example3}
-library(jointcenteR)
 # weighted estimates
 tab(acs2023, region, ten, dis, w = wgtp)
 # or using piped argument
@@ -128,7 +126,6 @@ Two functions are for preparing output and exporting it to excel:
 
 #### Examples
 ```{rexample4}
-library(jointcenteR)
 # split a chapter into individual rows for factchecking
 # first save word doc as .txt using Unicode (UTF-8) encoding
 chapter1 <- factcheck_format("C:/Data/chaptertext.txt")
