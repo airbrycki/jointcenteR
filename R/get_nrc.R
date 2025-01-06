@@ -28,7 +28,8 @@
 #' nrc_m <- get_nrc("monthly") |>
 #'   # reshape to make calculations easier
 #'   pivot_longer(!c("year", "month"), names_to = "var", values_to = "value") |>
-#'   filter(str_detect(var, '_2pl') & year == 2024) |> # keep current year & mf vars
+#'   # keep current year & mf vars
+#'   filter(stringr::str_detect(var, '_2pl') & year == 2024) |>
 #'   group_by(year, var) |>
 #'   mutate(avg = mean(value)) |>
 #'   filter(month == 1) |>
@@ -115,7 +116,8 @@ get_nrc <- function(type = "monthly") {
   # if type is annual data, select nsa vars and sum by year
   if (type == "annual") {
     annual <- df |>
-      dplyr::filter(str_detect(var, '_nsa') & !str_detect(var, 'underconst')) |>
+      dplyr::filter(stringr::str_detect(var, '_nsa') &
+                      !stringr::str_detect(var, 'underconst')) |>
       dplyr::group_by(year, var) |>
       dplyr::summarise(tot = sum(value, na.rm=TRUE)) |>
       tidyr::pivot_wider(names_from = var, values_from = tot) |>
@@ -127,7 +129,8 @@ get_nrc <- function(type = "monthly") {
     names(annual) <- sub("_nsa", "", names(annual))
 
     annual_underco <- df |>
-      dplyr::filter(str_detect(var, '_nsa') & str_detect(var, 'underconst')) |>
+      dplyr::filter(stringr::str_detect(var, '_nsa') &
+                      stringr::str_detect(var, 'underconst')) |>
       dplyr::filter(month == 12) |>
       tidyr::pivot_wider(names_from = var, values_from = value) |>
       dplyr::mutate(underconst_2pl = underconst_nsa - underconst_1_nsa) |>
@@ -137,14 +140,14 @@ get_nrc <- function(type = "monthly") {
     names(annual_underco) <- sub("_nsa", "", names(annual_underco))
 
     annual_full <- annual |>
-      left_join(annual_underco, by = "year")
+      dplyr::left_join(annual_underco, by = "year")
 
     lastyear <- max(annual_full$year)
     lastmonth <- max(df$month[df$year == lastyear])
 
     if (lastmonth < 12) {
       annual_full <- annual_full |>
-        filter(year != lastyear)
+        dplyr::filter(year != lastyear)
     }
 
     annual_full <- annual_full |>
@@ -157,7 +160,7 @@ get_nrc <- function(type = "monthly") {
   }
   else {
     monthly <- df |>
-      dplyr::filter(!str_detect(var, '_nsa')) |>
+      dplyr::filter(!stringr::str_detect(var, '_nsa')) |>
       tidyr::pivot_wider(names_from = var, values_from = value) |>
       dplyr::mutate(permit_2pl = permit_saar - permit_1_saar,
                     start_2pl = start_saar - start_1_saar,
