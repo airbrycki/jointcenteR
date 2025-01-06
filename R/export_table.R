@@ -18,7 +18,7 @@
 #'
 #' @examples
 #' tenTable <- acs2023 |> tab(tensimp, w = wgtp)
-#' export_table("C:/Data/tabswb.xlsx", "C:/Data/tabswb.xlsx", tenTable)
+#' export_table(tenTable, "C:/Data/tabswb.xlsx", "C:/Data/tabswb.xlsx")
 #'
 #' @export
 export_table <- function(tab, input_wb, output_wb) {
