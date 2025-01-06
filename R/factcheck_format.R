@@ -15,10 +15,10 @@
 #'
 #' @export
 factcheck_format <- function(txtfile) {
-  inputfile <- read_file(txtfile)
+  inputfile <- readr::read_file(txtfile)
 
   output_chr <- data.frame(strsplit(inputfile, '\\. |\\n'))
-  output_df <- bind_rows(output_chr)
+  output_df <- dplyr::bind_rows(output_chr)
   names(output_df) <- c("original_text")
 
   return(output_df)
