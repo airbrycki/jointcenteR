@@ -93,7 +93,7 @@ acs2023 |>
 tab(acs2023, tensimp, region)
 
 # calculate weighted medians (note: just a wrapper, doesn't work for assigning values to a variable in piped statement)
-wtd_med(acs2023, ten, hincp, w = wgtp)
+wtd_med(acs2023, hincp, ten, w = wgtp)
 # or in piped statement
 acs2023 |>
    dplyr::filter(tensimp == 2) |>
