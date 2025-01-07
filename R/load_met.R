@@ -37,10 +37,6 @@ load_met <- function(yr, path = acspath) {
   inputfile_met <- paste0("ACS_", yr, "_hhplus_metro.csv")
   df <- data.table::fread(file.path(path, inputfile_met))
 
-  if (yr == 2019) {
-    df <- df |> dplyr::rename(cbsaname20 = CBSAName20)
-  }
-
   df <- df |>
     dplyr::left_join(cbsapop, by = "cbsa20") |>
     dplyr::mutate(metro = dplyr::if_else(grepl("Metro", CBSA_name_5yr), 1, 0),
