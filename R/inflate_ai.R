@@ -11,7 +11,8 @@
 #'
 #' @return A numeric vector of inflated values.
 #'
-#' @note CPI-U inflation rates are pulled from FRED using tidyquant. Monthly values are averaged for the year.
+#' @note CPI-U inflation rates are pulled from FRED using tidyquant.
+#' Monthly values are averaged for the year.
 #'
 #' @examples
 #' # inflate value from 2000 dollars to 2023 dollars

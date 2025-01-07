@@ -12,7 +12,7 @@
 #' @return A tibble of weighted or unweighted sums and shares.
 #'
 #' @note The first two variables entered are the grouping variables for
-#' calculating shares.
+#' calculating shares. NA values are omitted from the tabulation.
 #'
 #' @examples
 #' data("acs22")
