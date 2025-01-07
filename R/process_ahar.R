@@ -45,18 +45,18 @@ process_ahar <- function(year, file) {
 
   assign(aharyr, ahar)
 
-  ahar <- ahar %>%
-    dplyr::slice(52, 1:51) %>%
+  ahar <- ahar |>
+    dplyr::slice(52, 1:51) |>
     dplyr::mutate(State = dplyr::if_else(State=="Total", "US", State),
                   StateName = dplyr::case_when(State == "DC" ~ "District of Columbia",
                                                State == "US" ~ "United States",
-                                               .default = state.name[match(State, state.abb)])) %>%
-    dplyr::mutate(across(c(where(is.character), -c("State", "StateName")), as.numeric)) %>%
-    dplyr::select(order(colnames(.)), -State) %>%
-    dplyr::relocate(StateName) %>%
-    dplyr::rename(State = StateName) %>%
-    dplyr::mutate(nottoprow = dplyr::if_else(State=="United States", 0, 1)) %>%
-    dplyr::arrange(nottoprow, State) %>%
+                                               .default = state.name[match(State, state.abb)])) |>
+    dplyr::mutate(across(c(where(is.character), -c("State", "StateName")), as.numeric)) |>
+    dplyr::select(-State) |>
+    dplyr::relocate(StateName) |>
+    dplyr::rename(State = StateName) |>
+    dplyr::mutate(nottoprow = dplyr::if_else(State=="United States", 0, 1)) |>
+    dplyr::arrange(nottoprow, State) |>
     dplyr::select(-nottoprow)
 
   return(ahar)
