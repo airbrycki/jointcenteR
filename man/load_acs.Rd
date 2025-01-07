@@ -4,13 +4,10 @@
 \alias{load_acs}
 \title{Load annual ACS household plus files}
 \usage{
-load_acs(yr, currentyear = 2023, path = acspath)
+load_acs(year, path = acspath)
 }
 \arguments{
-\item{yr}{The year of the data file to load in}
-
-\item{currentyear}{The most recent year of data available, used for coding
-variables that don't need to be inflated.}
+\item{year}{The year of the data file to load in}
 
 \item{path}{A path to the location of ACS .csv files.}
 }
@@ -28,7 +25,7 @@ multiple years with purrr::map.
 \examples{
 acspath <- "C:/Data/ACS/"
 # single year
-load_acs(2022, currentyear = 2023, path = acspath)
+load_acs(2022, path = acspath)
 
 # multiple years
 purrr::map(c(2019, 2021:2023), load_acs, path = acspath)
