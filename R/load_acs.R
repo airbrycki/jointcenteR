@@ -46,10 +46,7 @@ load_acs <- function(year, path = acspath) {
     }
     if (year > 2022) {
       df <- df |>
-        dplyr::mutate(st = state)
-    }
-    if (year == 2023) {
-      df <- df |>
+        dplyr::mutate(st = state) |>
         dplyr::mutate(hh_inccat2 = factor(dplyr::case_when(hincp < 30000 ~ 1,
                                       hincp >= 30000 & hincp < 75000 ~ 2,
                                       hincp >= 75000 ~ 3),
