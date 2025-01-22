@@ -1,9 +1,12 @@
-# jointcenteR
+<img src="https://github.com/user-attachments/assets/d132a96f-996a-4155-8db6-83a0d6e425b7" alt="Alt Text" style="width:15%; height:auto; align-items: center;">
 
 jointcenteR is a collection of functions to make routine JCHS tasks easier. The package is a combination of functions that are intended to help at each stage of analysis,
 from loading data into the environment to quickly running weighted tabulations to easily exporting tables to excel. The ultimate goal of this package is to make it just as
 easy for researchers to turn to R as it is to use other programs and to make the learning curve a little less steep. Please note that this package is still in development
 and functions will continue to be refined as further testing is completed.
+
+
+
 
 ## Installation
 
