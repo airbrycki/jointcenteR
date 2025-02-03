@@ -68,7 +68,8 @@ tab <- function(df, var, var2 = NULL, var3 = NULL, weight = NULL) {
         dplyr::group_by(!!var, !!var2) |>
         dplyr::summarise(tot = dplyr::n()) |>
         dplyr::group_by(!!var) |>
-        dplyr::mutate(sh = tot / sum(tot) * 100)
+        dplyr::mutate(sh = tot / sum(tot) * 100) |>
+        dplyr::ungroup()
       return(unwgtd_2way)
     }
     else {
@@ -107,7 +108,8 @@ tab <- function(df, var, var2 = NULL, var3 = NULL, weight = NULL) {
         dplyr::group_by(!!var, !!var2) |>
         dplyr::summarise(tot = sum(!!weight, na.rm = TRUE)) |>
         dplyr::group_by(!!var) |>
-        dplyr::mutate(sh = tot / sum(tot) * 100)
+        dplyr::mutate(sh = tot / sum(tot) * 100) |>
+        dplyr::ungroup()
       return(wgtd_2way)
     }
     else {
