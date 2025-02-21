@@ -1,4 +1,4 @@
-<img src="https://github.com/user-attachments/assets/d132a96f-996a-4155-8db6-83a0d6e425b7" alt="Alt Text" style="width:15%; height:auto; align-items: center;">
+<img src="https://github.com/user-attachments/assets/d132a96f-996a-4155-8db6-83a0d6e425b7" alt="jointcenteR hex" align="left" height="125">
 
 jointcenteR is a collection of functions to make routine JCHS tasks easier. The package is a combination of functions that are intended to help at each stage of analysis,
 from loading data into the environment to quickly running weighted tabulations to easily exporting tables to excel. The ultimate goal of this package is to make it just as
