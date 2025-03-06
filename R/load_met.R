@@ -46,7 +46,7 @@ load_met <- function(yr, path = acspath) {
                                                     metro==1 & cbsapop_5yr>=250000 & cbsapop_5yr<1000000 ~ "2 midmet",
                                                     (metro==1 & cbsapop_5yr<250000) | micro==1 ~ "3 smallmet_micro",
                                                     rural==1 ~ "4 rural"),
-                 metsize2_22_5yr = dplyr::case_when(metro==1 & poprank_23_5yr <= 100 ~ "1 top100",
+                 metsize2_22_5yr = dplyr::case_when(metro==1 & poprank_22_5yr <= 100 ~ "1 top100",
                                                      metro==1  ~ "2 other metro",
                                                      micro==1 ~ "3 micro",
                                                      rural==1 ~ "4 rural"))
