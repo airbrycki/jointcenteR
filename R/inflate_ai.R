@@ -9,10 +9,14 @@
 #'
 #' @param target_year The year values should be inflated to.
 #'
+#' @param fred_api_key Your unique FRED API key.
+#'
 #' @return A numeric vector of inflated values.
 #'
-#' @note CPI-U inflation rates are pulled from FRED using tidyquant.
-#' Monthly values are averaged for the year.
+#' @note CPI-U inflation rates are pulled from FRED using fredr.
+#' Monthly values are averaged for the year. Set your unique FRED API key here:
+#' https://fredaccount.stlouisfed.org/apikeys and add it to your R global
+#' environment using Sys.setenv(FRED_API_KEY = '{put your key here}').
 #'
 #' @examples
 #' # inflate value from 2000 dollars to 2023 dollars
@@ -23,24 +27,34 @@
 #' acs22 |> mutate(hincp_infl_23 = inflate_ai(hincp, 2022, 2023))
 #'
 #' @export
-inflate_ai <- function(initial_amount, reference_year, target_year) {
+inflate_ai <- function(initial_amount, reference_year, target_year, fred_api_key = Sys.getenv("FRED_API_KEY")) {
 
   # validate amount
   if (!is.numeric(initial_amount)) {
     stop("Initial amoung must be a numeric value.")
   }
 
+  # check if FRED API key is available
+  if (is.null(fred_api_key) || fred_api_key == "") {
+    stop("FRED API key is missing. Pass it as an argument or set it using Sys.setenv(FRED_API_KEY = 'your_key').")
+  }
+
+  # set FRED API key for the session
+  fredr::fredr_set_key(fred_api_key)
+
   # get CPI data for CPIAUCNS from FRED
-  cpi_data <- tidyquant::tq_get("CPIAUCNS", from = "1900-01-01", to = Sys.Date(),
-                                get = "economic.data")
+  cpi_data <- fredr::fredr(
+    series_id = "CPIAUCNS",
+    observation_start = as.Date(paste0(min(reference_year, target_year), "-01-01")),
+    observation_end   = as.Date(paste0(max(reference_year, target_year), "-12-31"))
+  )
 
   # calculate the annual average CPI for the reference and target years
   cpi_data <- cpi_data |>
     dplyr::mutate(year = lubridate::year(date)) |>
     dplyr::filter(year %in% c(reference_year, target_year)) |>
     dplyr::group_by(year) |>
-    dplyr::summarise(annual_avg_cpi = mean(price, na.rm = TRUE)) |>
-    dplyr::ungroup()
+    dplyr::summarise(annual_avg_cpi = mean(value, na.rm = TRUE), .groups = "drop")
 
   # throw error if requested years are out of bounds of available data
   if (nrow(cpi_data) < 2 & reference_year != target_year) {

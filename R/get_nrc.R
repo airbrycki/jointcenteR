@@ -4,11 +4,16 @@
 #'
 #' @param type Specifies the interval of interest, either "monthly" or "annual"
 #'
+#' @param fred_api_key Your unique FRED API key.
+#'
 #' @return A tibble of HVS variables for each quarter from 2Q2001 through most
 #'         recent available.
 #'
 #' @note Adapted from Len Kiefer:
-#'       http://lenkiefer.com/2017/09/18/a-tidyquant-um-of-solace/
+#'       http://lenkiefer.com/2017/09/18/a-tidyquant-um-of-solace/ and uses
+#'       fredr instead of tidyquant. Set your unique FRED API key here:
+#'       https://fredaccount.stlouisfed.org/apikeys and add it to your R global
+#'       environment using Sys.setenv(FRED_API_KEY = '{put your key here}').
 #'       Annual counts are totals of monthly NSA values, except annual under
 #'       construction counts are the value in December of a given year. If
 #'       current year is incomplete, it is omitted from annual table. Monthly
@@ -40,102 +45,84 @@
 #' nrc <- rbind(nrc_a, nrc_m)
 #'
 #' @export
-get_nrc <- function(type = "monthly") {
+get_nrc <- function(type = "monthly", fred_api_key = Sys.getenv("FRED_API_KEY")) {
+
+  # check if FRED API key is available
+  if (is.null(fred_api_key) || fred_api_key == "") {
+    stop("FRED API key is missing. Pass it as an argument or set it using Sys.setenv(FRED_API_KEY = 'your_key').")
+  }
+
+  # set FRED API key for the session
+  fredr::fredr_set_key(fred_api_key)
 
   tickers <- c(
-    'PERMIT',       # Permitted - total units, monthly SAAR
-    'PERMIT1',      # Permitted - single family, monthly SAAR
-    'PERMIT5',      # Permitted - multifam 5+, monthly SAAR
-
-    'HOUST',        # Started - total units, monthly SAAR
-    'HOUST1F',      # Started - single family, monthly SAAR
-    'HOUST5F',      # Started - multifam 5+, monthly SAAR
-
-    'UNDCONTSA',    # Under construction - total units, monthly SA
-    'UNDCON1USA',   # Under construction - single family, monthly SA
-    'UNDCON5MUSA',  # Under construction - multifam 5+, monthly SA
-
-    'COMPUTSA',     # Completed - total units, monthly SAAR
-    'COMPU1USA',    # Completed - single family, monthly SAAR
-    'COMPU5MUSA',   # Completed - multifam 5+, monthly SAAR
-
-    'PERMITNSA',    # Permitted - total units, NSA
-    'PERMIT1NSA',   # Permitted - single family, monthly NSA
-    'PERMIT5NSA',   # Permitted - multifam 5+, monthly NSA
-
-    'HOUSTNSA',     # Started - total units, NSA
-    'HOUST1FNSA',   # Started - single family, monthly NSA
-    'HOUST5FNSA',   # Started - multifam 5+, monthly NSA
-
-    'UNDCONTNSA',   # Under construction - total units, monthly NSA
-    'UNDCON1UNSA',  # Under construction - single family, monthly NSA
-    'UNDCON5MUNSA', # Under construction - multifam 5+, monthly NSA
-
-    'COMPUTNSA',    # Completed - total units, NSA
-    'COMPU1UNSA',   # Completed - single family, monthly NSA
-    'COMPU5MUNSA'   # Completed - multifam 5+, monthly NSA
+    'PERMIT', 'PERMIT1', 'PERMIT5',
+    'HOUST', 'HOUST1F', 'HOUST5F',
+    'UNDCONTSA', 'UNDCON1USA', 'UNDCON5MUSA',
+    'COMPUTSA', 'COMPU1USA', 'COMPU5MUSA',
+    'PERMITNSA', 'PERMIT1NSA', 'PERMIT5NSA',
+    'HOUSTNSA', 'HOUST1FNSA', 'HOUST5FNSA',
+    'UNDCONTNSA', 'UNDCON1UNSA', 'UNDCON5MUNSA',
+    'COMPUTNSA', 'COMPU1UNSA', 'COMPU5MUNSA'
   )
 
-  variable_labels <- c('permit_saar',
-                       'permit_1_saar',
-                       'permit_5pl_saar',
-                       'start_saar',
-                       'start_1_saar',
-                       'start_5pl_saar',
-                       'underconst_sa',
-                       'underconst_1_sa',
-                       'underconst_5pl_sa',
-                       'compl_saar',
-                       'compl_1_saar',
-                       'compl_5pl_saar',
-                       'permit_nsa',
-                       'permit_1_nsa',
-                       'permit_5pl_nsa',
-                       'start_nsa',
-                       'start_1_nsa',
-                       'start_5pl_nsa',
-                       'underconst_nsa',
-                       'underconst_1_nsa',
-                       'underconst_5pl_nsa',
-                       'compl_nsa',
-                       'compl_1_nsa',
-                       'compl_5pl_nsa'
+  variable_labels <- c(
+    'permit_saar', 'permit_1_saar', 'permit_5pl_saar',
+    'start_saar', 'start_1_saar', 'start_5pl_saar',
+    'underconst_sa', 'underconst_1_sa', 'underconst_5pl_sa',
+    'compl_saar', 'compl_1_saar', 'compl_5pl_saar',
+    'permit_nsa', 'permit_1_nsa', 'permit_5pl_nsa',
+    'start_nsa', 'start_1_nsa', 'start_5pl_nsa',
+    'underconst_nsa', 'underconst_1_nsa', 'underconst_5pl_nsa',
+    'compl_nsa', 'compl_1_nsa', 'compl_5pl_nsa'
   )
 
   # Create a lookup dataset
-  variable_table<-data.frame(symbol=tickers,var=variable_labels)
+  variable_table <- data.frame(symbol = tickers, var = variable_labels, stringsAsFactors = FALSE)
 
-  # pull data using tidyquant
-  df <- tidyquant::tq_get(tickers, get = "economic.data", from = "1970-01-01") |>
-    dplyr::rename(value = price) |>
+  # pull data using fredr
+  all_data <- lapply(tickers, function(ticker) {
+    fredr::fredr(
+      series_id = ticker,
+      observation_start = as.Date("1970-01-01")
+    ) |>
+      dplyr::select(date, value) |>
+      dplyr::mutate(symbol = ticker)
+  }) |>
+    dplyr::bind_rows()
+
+  df <- all_data |>
     dplyr::left_join(variable_table, by = "symbol") |>
-    dplyr::mutate(month = lubridate::month(date),
-                  year = lubridate::year(date)) |>
+    dplyr::mutate(
+      month = lubridate::month(date),
+      year = lubridate::year(date)
+    ) |>
     dplyr::select(-symbol, -date, year, month, var, value)
 
-  # if type is annual data, select nsa vars and sum by year
   if (type == "annual") {
     annual <- df |>
-      dplyr::filter(stringr::str_detect(var, '_nsa') &
-                      !stringr::str_detect(var, 'underconst')) |>
+      dplyr::filter(stringr::str_detect(var, "_nsa") &
+                      !stringr::str_detect(var, "underconst")) |>
       dplyr::group_by(year, var) |>
-      dplyr::summarise(tot = sum(value, na.rm=TRUE)) |>
+      dplyr::summarise(tot = sum(value, na.rm = TRUE), .groups = "drop") |>
       tidyr::pivot_wider(names_from = var, values_from = tot) |>
-      dplyr::mutate(permit_2pl = permit_nsa - permit_1_nsa,
-                    start_2pl = start_nsa - start_1_nsa,
-                    compl_2pl = compl_nsa - compl_1_nsa) |>
-      dplyr::ungroup()
+      dplyr::mutate(
+        permit_2pl = permit_nsa - permit_1_nsa,
+        start_2pl = start_nsa - start_1_nsa,
+        compl_2pl = compl_nsa - compl_1_nsa
+      )
 
     names(annual) <- sub("_nsa", "", names(annual))
 
     annual_underco <- df |>
-      dplyr::filter(stringr::str_detect(var, '_nsa') &
-                      stringr::str_detect(var, 'underconst')) |>
+      dplyr::filter(stringr::str_detect(var, "_nsa") &
+                      stringr::str_detect(var, "underconst")) |>
       dplyr::filter(month == 12) |>
       tidyr::pivot_wider(names_from = var, values_from = value) |>
-      dplyr::mutate(underconst_2pl = underconst_nsa - underconst_1_nsa) |>
-      dplyr::select(-month) |>
-      dplyr::ungroup()
+      dplyr::mutate(
+        underconst_2pl = underconst_nsa - underconst_1_nsa
+      ) |>
+      dplyr::select(-month)
 
     names(annual_underco) <- sub("_nsa", "", names(annual_underco))
 
@@ -143,7 +130,7 @@ get_nrc <- function(type = "monthly") {
       dplyr::left_join(annual_underco, by = "year")
 
     lastyear <- max(annual_full$year)
-    lastmonth <- max(df$month[df$year == lastyear])
+    lastmonth <- max(df$month[df$year == lastyear], na.rm = TRUE)
 
     if (lastmonth < 12) {
       annual_full <- annual_full |>
@@ -151,29 +138,32 @@ get_nrc <- function(type = "monthly") {
     }
 
     annual_full <- annual_full |>
-      dplyr::select(year, order(colnames(annual_full))) |>
-      dplyr::select(year, starts_with("permit"), starts_with("start"),
-                    starts_with("under"), starts_with("compl"))
-
+      dplyr::select(year, dplyr::everything()) |>
+      dplyr::select(year, dplyr::starts_with("permit"), dplyr::starts_with("start"),
+                    dplyr::starts_with("under"), dplyr::starts_with("compl"))
 
     return(annual_full)
-  }
-  else {
+
+  } else {
+
     monthly <- df |>
-      dplyr::filter(!stringr::str_detect(var, '_nsa')) |>
+      dplyr::filter(!stringr::str_detect(var, "_nsa")) |>
       tidyr::pivot_wider(names_from = var, values_from = value) |>
-      dplyr::mutate(permit_2pl = permit_saar - permit_1_saar,
-                    start_2pl = start_saar - start_1_saar,
-                    underconst_2pl = underconst_sa - underconst_1_sa,
-                    compl_2pl = compl_saar - compl_1_saar)  |>
-      dplyr::ungroup()
+      dplyr::mutate(
+        permit_2pl = permit_saar - permit_1_saar,
+        start_2pl = start_saar - start_1_saar,
+        underconst_2pl = underconst_sa - underconst_1_sa,
+        compl_2pl = compl_saar - compl_1_saar
+      )
 
     names(monthly) <- sub("_saar|_sa", "", names(monthly))
 
     monthly <- monthly |>
-      dplyr::select(year, month, order(colnames(monthly))) |>
-      dplyr::select(year, month, starts_with("permit"), starts_with("start"),
-                    starts_with("under"), starts_with("compl"))
+      dplyr::select(year, month, dplyr::everything()) |>
+      dplyr::select(year, month, dplyr::starts_with("permit"),
+                    dplyr::starts_with("start"),
+                    dplyr::starts_with("under"),
+                    dplyr::starts_with("compl"))
 
     return(monthly)
   }

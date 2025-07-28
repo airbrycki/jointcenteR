@@ -16,6 +16,7 @@ Description: Makes routine tasks easier, from loading data to running tabs and
   an excel workbook. Splits text document into spreadsheet rows for facthchecking.
 Imports: 
     dplyr,
+    fredr,
     Hmisc,
     lubridate,
     openxlsx,
@@ -24,7 +25,6 @@ Imports:
     rlang,
     stringr,
     tidycensus,
-    tidyquant,
     tidyr
 Suggests:
     testthat
