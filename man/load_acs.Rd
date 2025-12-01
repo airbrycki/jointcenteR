@@ -4,12 +4,14 @@
 \alias{load_acs}
 \title{Load annual ACS household plus files}
 \usage{
-load_acs(year, path = acspath)
+load_acs(year, path = acspath, type = "csv")
 }
 \arguments{
 \item{year}{The year of the data file to load in}
 
 \item{path}{A path to the location of ACS .csv files.}
+
+\item{type}{Type of file to load, either "csv", "dta", or "parquet"}
 }
 \value{
 Dataframes loaded into global environment named with convention
@@ -19,15 +21,19 @@ acs2023.
 Reads annual ACS household plus files into global environment
 }
 \note{
-Annual ACS files should be in one location and saved as .csv files. Load
+Annual ACS files should be in one location and saved as .csv, .dta, or .parquet files. Load
 multiple years with purrr::map.
 }
 \examples{
 acspath <- "C:/Data/ACS/"
 # single year
-load_acs(2022, path = acspath)
+load_acs(2022, path = acspath, type = "csv")
 
 # multiple years
-purrr::map(c(2019, 2021:2023), load_acs, path = acspath)
+purrr::map(c(2019, 2021:2023), load_acs, path = acspath, type = "csv")
+
+# multiple years, different file types
+year_file <- data.frame(year = c(2001, 2019), type = c("parquet", "csv"))
+purrr::map2(year_file$year, year_file$type, ~load_acs(.x, path = acspath, type = .y))
 
 }

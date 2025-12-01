@@ -4,7 +4,12 @@
 \alias{inflate_ai}
 \title{Inflate with CPI-U All Items}
 \usage{
-inflate_ai(initial_amount, reference_year, target_year)
+inflate_ai(
+  initial_amount,
+  reference_year,
+  target_year,
+  fred_api_key = Sys.getenv("FRED_API_KEY")
+)
 }
 \arguments{
 \item{initial_amount}{A numeric value or vector to be inflated.}
@@ -12,6 +17,8 @@ inflate_ai(initial_amount, reference_year, target_year)
 \item{reference_year}{The year the values to be inflated are from.}
 
 \item{target_year}{The year values should be inflated to.}
+
+\item{fred_api_key}{Your unique FRED API key.}
 }
 \value{
 A numeric vector of inflated values.
@@ -21,7 +28,10 @@ Inflate values from reference to target dollars using CPI-U All Items, annual
 NSA
 }
 \note{
-CPI-U inflation rates are pulled from FRED using tidyquant. Monthly values are averaged for the year.
+CPI-U inflation rates are pulled from FRED using fredr.
+Monthly values are averaged for the year. Set your unique FRED API key here:
+https://fredaccount.stlouisfed.org/apikeys and add it to your R global
+environment using Sys.setenv(FRED_API_KEY = '{put your key here}').
 }
 \examples{
 # inflate value from 2000 dollars to 2023 dollars

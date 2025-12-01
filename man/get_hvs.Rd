@@ -4,7 +4,10 @@
 \alias{get_hvs}
 \title{Get Housing Vacancy Survey data}
 \usage{
-get_hvs()
+get_hvs(fred_api_key = Sys.getenv("FRED_API_KEY"))
+}
+\arguments{
+\item{fred_api_key}{Your unique FRED API key.}
 }
 \value{
 A tibble of HVS variables for each quarter from 2Q2001 through most
@@ -15,7 +18,10 @@ Pulls and organizes Housing Vacancy Survey data using tidyquant
 }
 \note{
 Adapted from Len Kiefer:
-http://lenkiefer.com/2017/09/18/a-tidyquant-um-of-solace/
+http://lenkiefer.com/2017/09/18/a-tidyquant-um-of-solace/ and uses
+fredr instead of tidyquant. Set your unique FRED API key here:
+https://fredaccount.stlouisfed.org/apikeys and add it to your R global
+environment using Sys.setenv(FRED_API_KEY = '{put your key here}').
 }
 \examples{
 hvs <- get_hvs()

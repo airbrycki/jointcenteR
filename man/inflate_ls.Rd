@@ -4,7 +4,12 @@
 \alias{inflate_ls}
 \title{Inflate with CPI-U Less Shelter}
 \usage{
-inflate_ls(initial_rent, reference_year, target_year)
+inflate_ls(
+  initial_rent,
+  reference_year,
+  target_year,
+  fred_api_key = Sys.getenv("FRED_API_KEY")
+)
 }
 \arguments{
 \item{initial_rent}{A numeric value or vector to be inflated.}
@@ -12,6 +17,8 @@ inflate_ls(initial_rent, reference_year, target_year)
 \item{reference_year}{The year the values to be inflated are from.}
 
 \item{target_year}{The year values should be inflated to.}
+
+\item{fred_api_key}{Your unique FRED API key.}
 }
 \value{
 A numeric vector of inflated values.
@@ -20,8 +27,10 @@ A numeric vector of inflated values.
 Inflate rents from reference to target dollars using CPI-U Less Shelter, NSA.
 }
 \note{
-CPI-U inflation rates are pulled from FRED using tidyquant. Monthly
-values are averaged for the year.
+CPI-U inflation rates are pulled from FRED using fredr.
+Monthly values are averaged for the year. Set your unique FRED API key here:
+https://fredaccount.stlouisfed.org/apikeys and add it to your R global
+environment using Sys.setenv(FRED_API_KEY = '{put your key here}').
 }
 \examples{
 # inflate rent from 2000 dollars to 2023 dollars

@@ -4,10 +4,12 @@
 \alias{get_nrc}
 \title{Get New Residential Construction data}
 \usage{
-get_nrc(type = "monthly")
+get_nrc(type = "monthly", fred_api_key = Sys.getenv("FRED_API_KEY"))
 }
 \arguments{
 \item{type}{Specifies the interval of interest, either "monthly" or "annual"}
+
+\item{fred_api_key}{Your unique FRED API key.}
 }
 \value{
 A tibble of HVS variables for each quarter from 2Q2001 through most
@@ -18,7 +20,10 @@ Pulls and organizes New Residential Construction data using tidyquant
 }
 \note{
 Adapted from Len Kiefer:
-http://lenkiefer.com/2017/09/18/a-tidyquant-um-of-solace/
+http://lenkiefer.com/2017/09/18/a-tidyquant-um-of-solace/ and uses
+fredr instead of tidyquant. Set your unique FRED API key here:
+https://fredaccount.stlouisfed.org/apikeys and add it to your R global
+environment using Sys.setenv(FRED_API_KEY = '{put your key here}').
 Annual counts are totals of monthly NSA values, except annual under
 construction counts are the value in December of a given year. If
 current year is incomplete, it is omitted from annual table. Monthly
