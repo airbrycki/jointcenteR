@@ -15,8 +15,12 @@ Description: Makes routine tasks easier, from loading data to running tabs and
   inflates rents to target year dollars using CPI-U Less Shelter. Exports tabs to 
   an excel workbook. Splits text document into spreadsheet rows for facthchecking.
 Imports: 
+    DBI,
     dplyr,
+    duckdb,
     fredr,
+    glue,
+    haven,
     Hmisc,
     lubridate,
     openxlsx,
