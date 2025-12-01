@@ -42,26 +42,42 @@ load_acs <- function(year, path = acspath, type = "csv") {
     # annual files
     if (year > 2015) {
       inputfile <- paste0("ACS_", year, "_hhplus.csv")
+      df <- data.table::fread(file.path(path, inputfile))
+
       # multiyear file
     } else if (year >= 2001 & year <= 2015) {
       inputfile <- "ACS_multiyear_full.csv"
-    }
+      full_path <- file.path(path, inputfile)
 
-    ### read file------
-    df <- data.table::fread(file.path(path, inputfile))
+      con <- duckdb::dbConnect(duckdb::duckdb(), dbdir = ":memory:")
+      query <- glue::glue_sql(
+        "SELECT * FROM read_csv_auto({full_path}) WHERE year = {year}",
+        .con = con
+      )
+      df <- data.table::data.table(DBI::dbGetQuery(con, query))
+      DBI::dbDisconnect(con)
+    } else {
+      warning("year not supported")
+      stop()
+    }
 
     ## .dta files-----
   } else if (type == "dta") {
+    message("this could take a while. you might want to convert your files.")
     ### create input file name-----
     # annual files
     if (year > 2015) {
       inputfile <- paste0("ACS_", year, "_hhplus.dta")
-    } else if (year >= 2001 & year <= 2015) {
-      inputfile <- "ACS_multiyear_full.dta"
-    }
+      df <- haven::read_dta(file.path(path, inputfile))
 
-    ### read file-----
-    df <- haven::read_dta(file.path(path, inputfile))
+      # multiyear file
+    } else if (year >= 2001 & year <= 2015) {
+      warning("this is a bad idea. convert your file to a parquet.")
+      stop()
+    } else {
+      warning("year not supported")
+      stop()
+    }
 
     ## .parquet files
   } else if (type == "parquet") {
@@ -82,27 +98,28 @@ load_acs <- function(year, path = acspath, type = "csv") {
     )
     df <- data.table::data.table(DBI::dbGetQuery(con, query))
     duckdb::dbDisconnect(con)
+
+    ## any other file type
   } else {
     warning("file type not supported")
     stop()
   }
 
   # add another agecat variable
-  if (year > 2018) {
-    df <- df |>
-      dplyr::mutate(
-        agecat4 = factor(
-          dplyr::case_when(
-            agep < 25 ~ 1,
-            agep >= 25 & agep < 55 ~ 2,
-            agep >= 55 & agep < 65 ~ 3,
-            agep >= 65 ~ 4
-          ),
-          levels = c(1:4),
-          labels = c("Under 25", "25-54", "55-64", "65+")
-        )
+  df <- df |>
+    dplyr::mutate(
+      agecat4 = factor(
+        dplyr::case_when(
+          agep < 25 ~ 1,
+          agep >= 25 & agep < 55 ~ 2,
+          agep >= 55 & agep < 65 ~ 3,
+          agep >= 65 ~ 4
+        ),
+        levels = c(1:4),
+        labels = c("Under 25", "25-54", "55-64", "65+")
       )
-  }
+    )
+
   # add simplified hh_inccat varaible
   if (year > 2022) {
     df <- df |>
