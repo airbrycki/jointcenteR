@@ -40,12 +40,12 @@ load_acs <- function(year, path = acspath, type = "csv") {
   if (type == "csv") {
     ### create input file name-----
     # annual files
-    if (year > 2015) {
+    if (year >= 2015) {
       inputfile <- paste0("ACS_", year, "_hhplus.csv")
       df <- data.table::fread(file.path(path, inputfile))
 
       # multiyear file
-    } else if (year >= 2001 & year <= 2015) {
+    } else if (year >= 2001 & year < 2015) {
       inputfile <- "ACS_multiyear_full.csv"
       full_path <- file.path(path, inputfile)
 
@@ -66,12 +66,12 @@ load_acs <- function(year, path = acspath, type = "csv") {
     message("this could take a while. you might want to convert your files.")
     ### create input file name-----
     # annual files
-    if (year > 2015) {
+    if (year >= 2015) {
       inputfile <- paste0("ACS_", year, "_hhplus.dta")
       df <- haven::read_dta(file.path(path, inputfile))
 
       # multiyear file
-    } else if (year >= 2001 & year <= 2015) {
+    } else if (year >= 2001 & year < 2015) {
       warning("this is a bad idea. convert your file to a parquet.")
       stop()
     } else {
@@ -81,9 +81,9 @@ load_acs <- function(year, path = acspath, type = "csv") {
 
     ## .parquet files
   } else if (type == "parquet") {
-    if (year > 2015) {
+    if (year >= 2015) {
       inputfile <- paste0("ACS_", year, "_hhplus.parquet")
-    } else if (year >= 2001 & year <= 2015) {
+    } else if (year >= 2001 & year < 2015) {
       inputfile <- "ACS_multiyear_full.parquet"
     }
 
