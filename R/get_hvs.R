@@ -1,6 +1,6 @@
 #' Get Housing Vacancy Survey data
 #'
-#' Pulls and organizes Housing Vacancy Survey data using tidyquant
+#' Pulls and organizes Housing Vacancy Survey data using fredr
 #'
 #' @param fred_api_key Your unique FRED API key.
 #'
@@ -18,32 +18,33 @@
 #'
 #' @export
 get_hvs <- function(fred_api_key = Sys.getenv("FRED_API_KEY")) {
-
   # check if FRED API key is available
   if (is.null(fred_api_key) || fred_api_key == "") {
-    stop("FRED API key is missing. Pass it as an argument or set it using Sys.setenv(FRED_API_KEY = 'your_key').")
+    stop(
+      "FRED API key is missing. Pass it as an argument or set it using Sys.setenv(FRED_API_KEY = 'your_key')."
+    )
   }
 
   # set FRED API key for the session
   fredr::fredr_set_key(fred_api_key)
 
   tickers <- c(
-    'ETOTALUSQ176N',    # All housing units
-    'EVACANTUSQ176N',   # Vacant
-    'EYRVACUSQ176N',    # Year-round vacant
-    'ERENTUSQ176N',     # Vacant for rent
-    'ESALEUSQ176N',     # Vacant for sale
-    'ERNTSLDUSQ176N',   # Vacant rented or sold
-    'EOFFMARUSQ176N',   # Vacant held off market
-    'EOCCUSEUSQ176N',   # Vacant occasional use
-    'EUREUSQ176N',      # Vacant usual residence elsewhere
-    'EOTHUSQ176N',      # Vacant other
-    'ESEASONUSQ176N',   # Vacant seasonal
-    'EOCCUSQ176N',      # Occupied
-    'EOWNOCCUSQ176N',   # Owner occupied
-    'ERNTOCCUSQ176N',   # Renter occupied
-    'RRVRUSQ156N',      # Rental vacancy rate
-    'RHVRUSQ156N'       # Homeowner vacancy rate
+    'ETOTALUSQ176N', # All housing units
+    'EVACANTUSQ176N', # Vacant
+    'EYRVACUSQ176N', # Year-round vacant
+    'ERENTUSQ176N', # Vacant for rent
+    'ESALEUSQ176N', # Vacant for sale
+    'ERNTSLDUSQ176N', # Vacant rented or sold
+    'EOFFMARUSQ176N', # Vacant held off market
+    'EOCCUSEUSQ176N', # Vacant occasional use
+    'EUREUSQ176N', # Vacant usual residence elsewhere
+    'EOTHUSQ176N', # Vacant other
+    'ESEASONUSQ176N', # Vacant seasonal
+    'EOCCUSQ176N', # Occupied
+    'EOWNOCCUSQ176N', # Owner occupied
+    'ERNTOCCUSQ176N', # Renter occupied
+    'RRVRUSQ156N', # Rental vacancy rate
+    'RHVRUSQ156N' # Homeowner vacancy rate
   )
 
   variable_labels <- c(
@@ -66,7 +67,11 @@ get_hvs <- function(fred_api_key = Sys.getenv("FRED_API_KEY")) {
   )
 
   # Create a lookup dataset
-  variable_table <- data.frame(symbol = tickers, var = variable_labels, stringsAsFactors = FALSE)
+  variable_table <- data.frame(
+    symbol = tickers,
+    var = variable_labels,
+    stringsAsFactors = FALSE
+  )
 
   # pull data using fredr
   all_data <- lapply(tickers, function(ticker) {
@@ -98,10 +103,10 @@ get_hvs <- function(fred_api_key = Sys.getenv("FRED_API_KEY")) {
       names_sep = "_"
     ) |>
     dplyr::mutate(
-      value_homeownership_rate =
-        value_owner_occupied / value_occupied * 100,
-      value_4q_avg_homeownership_rate =
-        value_4q_avg_owner_occupied / value_4q_avg_occupied * 100
+      value_homeownership_rate = value_owner_occupied / value_occupied * 100,
+      value_4q_avg_homeownership_rate = value_4q_avg_owner_occupied /
+        value_4q_avg_occupied *
+        100
     )
 
   return(df)

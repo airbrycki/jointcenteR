@@ -1,6 +1,6 @@
 #' Get New Residential Construction data
 #'
-#' Pulls and organizes New Residential Construction data using tidyquant
+#' Pulls and organizes New Residential Construction data using fredr
 #'
 #' @param type Specifies the interval of interest, either "monthly" or "annual"
 #'
@@ -45,40 +45,80 @@
 #' nrc <- rbind(nrc_a, nrc_m)
 #'
 #' @export
-get_nrc <- function(type = "monthly", fred_api_key = Sys.getenv("FRED_API_KEY")) {
-
+get_nrc <- function(
+  type = "monthly",
+  fred_api_key = Sys.getenv("FRED_API_KEY")
+) {
   # check if FRED API key is available
   if (is.null(fred_api_key) || fred_api_key == "") {
-    stop("FRED API key is missing. Pass it as an argument or set it using Sys.setenv(FRED_API_KEY = 'your_key').")
+    stop(
+      "FRED API key is missing. Pass it as an argument or set it using Sys.setenv(FRED_API_KEY = 'your_key')."
+    )
   }
 
   # set FRED API key for the session
   fredr::fredr_set_key(fred_api_key)
 
   tickers <- c(
-    'PERMIT', 'PERMIT1', 'PERMIT5',
-    'HOUST', 'HOUST1F', 'HOUST5F',
-    'UNDCONTSA', 'UNDCON1USA', 'UNDCON5MUSA',
-    'COMPUTSA', 'COMPU1USA', 'COMPU5MUSA',
-    'PERMITNSA', 'PERMIT1NSA', 'PERMIT5NSA',
-    'HOUSTNSA', 'HOUST1FNSA', 'HOUST5FNSA',
-    'UNDCONTNSA', 'UNDCON1UNSA', 'UNDCON5MUNSA',
-    'COMPUTNSA', 'COMPU1UNSA', 'COMPU5MUNSA'
+    'PERMIT',
+    'PERMIT1',
+    'PERMIT5',
+    'HOUST',
+    'HOUST1F',
+    'HOUST5F',
+    'UNDCONTSA',
+    'UNDCON1USA',
+    'UNDCON5MUSA',
+    'COMPUTSA',
+    'COMPU1USA',
+    'COMPU5MUSA',
+    'PERMITNSA',
+    'PERMIT1NSA',
+    'PERMIT5NSA',
+    'HOUSTNSA',
+    'HOUST1FNSA',
+    'HOUST5FNSA',
+    'UNDCONTNSA',
+    'UNDCON1UNSA',
+    'UNDCON5MUNSA',
+    'COMPUTNSA',
+    'COMPU1UNSA',
+    'COMPU5MUNSA'
   )
 
   variable_labels <- c(
-    'permit_saar', 'permit_1_saar', 'permit_5pl_saar',
-    'start_saar', 'start_1_saar', 'start_5pl_saar',
-    'underconst_sa', 'underconst_1_sa', 'underconst_5pl_sa',
-    'compl_saar', 'compl_1_saar', 'compl_5pl_saar',
-    'permit_nsa', 'permit_1_nsa', 'permit_5pl_nsa',
-    'start_nsa', 'start_1_nsa', 'start_5pl_nsa',
-    'underconst_nsa', 'underconst_1_nsa', 'underconst_5pl_nsa',
-    'compl_nsa', 'compl_1_nsa', 'compl_5pl_nsa'
+    'permit_saar',
+    'permit_1_saar',
+    'permit_5pl_saar',
+    'start_saar',
+    'start_1_saar',
+    'start_5pl_saar',
+    'underconst_sa',
+    'underconst_1_sa',
+    'underconst_5pl_sa',
+    'compl_saar',
+    'compl_1_saar',
+    'compl_5pl_saar',
+    'permit_nsa',
+    'permit_1_nsa',
+    'permit_5pl_nsa',
+    'start_nsa',
+    'start_1_nsa',
+    'start_5pl_nsa',
+    'underconst_nsa',
+    'underconst_1_nsa',
+    'underconst_5pl_nsa',
+    'compl_nsa',
+    'compl_1_nsa',
+    'compl_5pl_nsa'
   )
 
   # Create a lookup dataset
-  variable_table <- data.frame(symbol = tickers, var = variable_labels, stringsAsFactors = FALSE)
+  variable_table <- data.frame(
+    symbol = tickers,
+    var = variable_labels,
+    stringsAsFactors = FALSE
+  )
 
   # pull data using fredr
   all_data <- lapply(tickers, function(ticker) {
@@ -101,8 +141,10 @@ get_nrc <- function(type = "monthly", fred_api_key = Sys.getenv("FRED_API_KEY"))
 
   if (type == "annual") {
     annual <- df |>
-      dplyr::filter(stringr::str_detect(var, "_nsa") &
-                      !stringr::str_detect(var, "underconst")) |>
+      dplyr::filter(
+        stringr::str_detect(var, "_nsa") &
+          !stringr::str_detect(var, "underconst")
+      ) |>
       dplyr::group_by(year, var) |>
       dplyr::summarise(tot = sum(value, na.rm = TRUE), .groups = "drop") |>
       tidyr::pivot_wider(names_from = var, values_from = tot) |>
@@ -115,8 +157,10 @@ get_nrc <- function(type = "monthly", fred_api_key = Sys.getenv("FRED_API_KEY"))
     names(annual) <- sub("_nsa", "", names(annual))
 
     annual_underco <- df |>
-      dplyr::filter(stringr::str_detect(var, "_nsa") &
-                      stringr::str_detect(var, "underconst")) |>
+      dplyr::filter(
+        stringr::str_detect(var, "_nsa") &
+          stringr::str_detect(var, "underconst")
+      ) |>
       dplyr::filter(month == 12) |>
       tidyr::pivot_wider(names_from = var, values_from = value) |>
       dplyr::mutate(
@@ -139,13 +183,16 @@ get_nrc <- function(type = "monthly", fred_api_key = Sys.getenv("FRED_API_KEY"))
 
     annual_full <- annual_full |>
       dplyr::select(year, dplyr::everything()) |>
-      dplyr::select(year, dplyr::starts_with("permit"), dplyr::starts_with("start"),
-                    dplyr::starts_with("under"), dplyr::starts_with("compl"))
+      dplyr::select(
+        year,
+        dplyr::starts_with("permit"),
+        dplyr::starts_with("start"),
+        dplyr::starts_with("under"),
+        dplyr::starts_with("compl")
+      )
 
     return(annual_full)
-
   } else {
-
     monthly <- df |>
       dplyr::filter(!stringr::str_detect(var, "_nsa")) |>
       tidyr::pivot_wider(names_from = var, values_from = value) |>
@@ -160,10 +207,14 @@ get_nrc <- function(type = "monthly", fred_api_key = Sys.getenv("FRED_API_KEY"))
 
     monthly <- monthly |>
       dplyr::select(year, month, dplyr::everything()) |>
-      dplyr::select(year, month, dplyr::starts_with("permit"),
-                    dplyr::starts_with("start"),
-                    dplyr::starts_with("under"),
-                    dplyr::starts_with("compl"))
+      dplyr::select(
+        year,
+        month,
+        dplyr::starts_with("permit"),
+        dplyr::starts_with("start"),
+        dplyr::starts_with("under"),
+        dplyr::starts_with("compl")
+      )
 
     return(monthly)
   }
